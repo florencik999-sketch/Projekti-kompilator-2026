@@ -1,26 +1,30 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SimpleParser {
+
+    private Map<String, String> simbolet = new LinkedHashMap<>();
+
     public List<ExecutableStatement> parse(List<String> lines) {
         List<ExecutableStatement> program = new ArrayList<>();
-        Map<String, String> varOperators = new HashMap<>();
 
         for (String line : lines) {
             line = line.trim();
             if (line.isEmpty()) continue;
 
             if (line.startsWith("Lexo")) {
-                program.add(new ReadStatement(line.split(" ")[1]));
+                String varName = line.split(" ")[1];
+                simbolet.putIfAbsent(varName, null);
+                program.add(new ReadStatement(varName));
 
             } else if (line.startsWith("Afisho")) {
                 String varName = line.split(" ")[1];
-                String op = varOperators.getOrDefault(varName, null);
-                program.add(new OutputStatement(varName, op));
+                String lastOp = simbolet.getOrDefault(varName, null);
+                program.add(new OutputStatement(varName, lastOp));
 
             } else if (line.contains("=")) {
                 String[] parts = line.split("=", 2);
@@ -33,15 +37,13 @@ public class SimpleParser {
                 else if (expr.contains("*")) op = "*";
                 else if (expr.contains("/")) op = "/";
 
-                varOperators.put(var, op);
+                simbolet.put(var, op);
                 program.add(new AssignmentStatement(var, expr));
 
             } else {
                 System.out.println("Nuk u gjend simboli " + line);
             }
         }
-
         return program;
     }
 }
-
