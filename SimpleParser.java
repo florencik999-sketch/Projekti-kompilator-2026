@@ -1,13 +1,10 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SimpleParser {
 
-    private Map<String, String> simbolet = new LinkedHashMap<>();
+    private Map<String, String> simbolet = new HashMap<>();
 
     public List<ExecutableStatement> parse(List<String> lines) {
         List<ExecutableStatement> program = new ArrayList<>();
